@@ -1,0 +1,101 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-medium);
+  color: var(--text-muted);
+  letter-spacing: 0.1em;
+}
+
+.counter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.number {
+  position: relative;
+}
+
+.value {
+  font-family: var(--font-display);
+  font-size: var(--text-5xl);
+  font-weight: var(--weight-bold);
+  color: var(--gold-primary);
+  line-height: 1;
+  text-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+}
+
+.trophies {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.trophy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, var(--gold-primary) 0%, var(--gold-bright) 100%);
+  border-radius: var(--radius-md);
+  box-shadow: 
+    0 4px 12px rgba(212, 175, 55, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.trophy.animate {
+  animation: trophyPop 0.6s var(--ease-out) backwards;
+  animation-delay: var(--delay);
+}
+
+@keyframes trophyPop {
+  0% {
+    transform: scale(0) rotate(-20deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.15) rotate(5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.trophyIcon {
+  width: 24px;
+  height: 24px;
+  color: var(--bg-dark);
+}
+
+.subtitle {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: var(--gold-muted);
+  letter-spacing: 0.02em;
+}
+
+/* Glow effect when count increases */
+.container[data-increased="true"] .value {
+  animation: glowPulse 0.8s ease-out;
+}
+
+@keyframes glowPulse {
+  0% {
+    text-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+  }
+  50% {
+    text-shadow: 0 0 60px rgba(255, 215, 0, 0.8);
+  }
+  100% {
+    text-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+  }
+}
+

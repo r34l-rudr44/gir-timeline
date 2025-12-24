@@ -1,0 +1,86 @@
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  background: var(--fest-color);
+  border-radius: var(--radius-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.badge::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+}
+
+.badge.animate {
+  animation: badgeEnter 0.5s var(--ease-out) backwards;
+}
+
+@keyframes badgeEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.content {
+  display: flex;
+  gap: var(--space-2);
+  align-items: baseline;
+}
+
+.fest {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.year {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.trophy {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: trophyBounce 0.6s var(--ease-out);
+}
+
+@keyframes trophyBounce {
+  0% {
+    transform: scale(0) rotate(-30deg);
+  }
+  50% {
+    transform: scale(1.2) rotate(10deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.trophyIcon {
+  width: 18px;
+  height: 18px;
+  color: var(--gold-bright);
+  filter: drop-shadow(0 0 4px rgba(255, 215, 0, 0.6));
+}
+

@@ -1,0 +1,347 @@
+.wrapper {
+  min-height: 100vh;
+  background: var(--bg-dark);
+}
+
+/* Hero Section */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-8);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 50% 30%,
+    rgba(212, 175, 55, 0.08) 0%,
+    transparent 60%
+  );
+  pointer-events: none;
+}
+
+.heroContent {
+  text-align: center;
+  max-width: 600px;
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+}
+
+.house {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 15vw, 8rem);
+  font-weight: var(--weight-bold);
+  background: linear-gradient(
+    135deg,
+    var(--gold-muted) 0%,
+    var(--gold-primary) 30%,
+    var(--gold-bright) 50%,
+    var(--gold-primary) 70%,
+    var(--gold-muted) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  filter: drop-shadow(0 0 30px rgba(212, 175, 55, 0.3));
+  animation: shimmerText 3s ease-in-out infinite;
+}
+
+@keyframes shimmerText {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.subtitle {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.tagline {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  color: var(--text-muted);
+  margin-bottom: var(--space-12);
+}
+
+.scrollHint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--text-muted);
+  font-size: var(--text-sm);
+  animation: fadeInUp 1s ease-out 0.5s backwards;
+}
+
+.scrollArrow {
+  font-size: var(--text-2xl);
+  animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Timeline Container */
+.container {
+  position: relative;
+  min-height: 400vh; /* Creates scroll space */
+}
+
+.sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+}
+
+.dashboard {
+  width: 100%;
+  max-width: 900px;
+  background: var(--bg-elevated);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border-subtle);
+  padding: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  box-shadow: 
+    0 4px 24px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.03);
+  transition: all var(--duration-slow) var(--ease-out);
+}
+
+.dashboard.phaseTransition {
+  animation: phaseGlow 1s ease-out;
+}
+
+@keyframes phaseGlow {
+  0% {
+    box-shadow: 
+      0 4px 24px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.03),
+      0 0 60px rgba(212, 175, 55, 0.5);
+  }
+  100% {
+    box-shadow: 
+      0 4px 24px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.03);
+  }
+}
+
+.dashboard.dominanceMode {
+  border-color: rgba(212, 175, 55, 0.2);
+  box-shadow: 
+    0 4px 24px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(212, 175, 55, 0.1),
+    0 0 40px rgba(212, 175, 55, 0.1);
+}
+
+/* Dashboard Sections */
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+.chartSection {
+  padding: var(--space-4) 0;
+}
+
+.description {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  background: var(--bg-card);
+  border-radius: var(--radius-md);
+}
+
+.eventDescription {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  color: var(--text-secondary);
+  flex: 1;
+}
+
+.rankDisplay {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.rankLabel {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.rankValue {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-bold);
+}
+
+.metricsRow {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.divider {
+  width: 1px;
+  height: 60px;
+  background: var(--border-subtle);
+  align-self: center;
+}
+
+/* Progress Bar */
+.progressBar {
+  height: 4px;
+  background: var(--bg-card);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--gold-muted) 0%,
+    var(--gold-primary) 50%,
+    var(--gold-bright) 100%
+  );
+  border-radius: var(--radius-full);
+  transition: width var(--duration-normal) var(--ease-out);
+}
+
+/* Scroll Spacer */
+.scrollSpacer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+}
+
+.eventSection {
+  height: calc(400vh / 8); /* Divide by number of events */
+}
+
+/* Footer */
+.footer {
+  padding: var(--space-16) var(--space-8);
+  text-align: center;
+  background: linear-gradient(
+    180deg,
+    var(--bg-dark) 0%,
+    var(--bg-elevated) 100%
+  );
+}
+
+.footerContent {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.principle {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: var(--weight-medium);
+  color: var(--gold-primary);
+  font-style: italic;
+  margin-bottom: var(--space-6);
+}
+
+.credit {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .sticky {
+    padding: var(--space-4);
+  }
+  
+  .dashboard {
+    padding: var(--space-4);
+    gap: var(--space-4);
+  }
+  
+  .metricsRow {
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+  
+  .divider {
+    display: none;
+  }
+  
+  .topRow {
+    flex-direction: column;
+  }
+  
+  .description {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .house {
+    font-size: 3rem;
+  }
+  
+  .subtitle {
+    font-size: var(--text-base);
+  }
+}
+
