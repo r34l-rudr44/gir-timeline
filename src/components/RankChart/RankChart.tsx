@@ -174,20 +174,24 @@ export function RankChart({ events, currentIndex, animate = true }: RankChartPro
               
               {/* Trophy indicator */}
               {event.isTrophyWin && (
-                <g className={styles.trophyMarker}>
+                <g 
+                  className={styles.trophyMarker}
+                  transform={`translate(${x}, ${y - 24})`}
+                >
                   <circle
-                    cx={x}
-                    cy={y - 20}
-                    r={10}
+                    cx={0}
+                    cy={0}
+                    r={12}
                     fill="var(--gold-primary)"
+                    opacity={0.9}
                   />
-                  <text
-                    x={x}
-                    y={y - 16}
-                    className={styles.trophyIcon}
-                  >
-                    🏆
-                  </text>
+                  {/* Trophy SVG icon */}
+                  <g transform="translate(-8, -8)" fill="var(--bg-dark)" stroke="none">
+                    <path d="M6 9H4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2h-2" />
+                    <path d="M6 9V7a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                    <path d="M4 9h12" />
+                    <circle cx="8" cy="11" r="1" fill="var(--bg-dark)" />
+                  </g>
                 </g>
               )}
               
