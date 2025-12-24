@@ -11,7 +11,7 @@ import styles from './Timeline.module.css';
 
 export function Timeline() {
   const sectionRefs = useRef<Array<HTMLElement | null>>([]);
-  const [visibleSections, setVisibleSections] = useState<Set<number>>(new Set([0]));
+  const [visibleSections, setVisibleSections] = useState<Set<number>>(new Set());
 
   // AI-2027-style: the middle column scroll sections drive which "frame" is active on the right.
   const [currentEventIndex, setCurrentEventIndex] = useState(0);
@@ -39,31 +39,53 @@ export function Timeline() {
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
 
-    sectionRefs.current.forEach((el, index) => {
-      if (!el) return;
+    // Set up observers for all sections
+    const setupObservers = () => {
+      sectionRefs.current.forEach((el, index) => {
+        if (!el) return;
 
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              setVisibleSections((prev) => new Set([...prev, index]));
-            }
-          });
-        },
-        {
-          threshold: 0.2,
-          rootMargin: '-20% 0px -20% 0px',
+        // Disconnect existing observer if any
+        const existingObserver = observers[index];
+        if (existingObserver) {
+          existingObserver.disconnect();
         }
-      );
 
-      observer.observe(el);
-      observers.push(observer);
-    });
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                setVisibleSections((prev) => {
+                  const newSet = new Set(prev);
+                  newSet.add(index);
+                  return newSet;
+                });
+              }
+            });
+          },
+          {
+            threshold: [0, 0.1, 0.2, 0.3],
+            rootMargin: '0px 0px -10% 0px',
+          }
+        );
+
+        observer.observe(el);
+        observers[index] = observer;
+      });
+    };
+
+    // Initial setup
+    setupObservers();
+
+    // Also set up after a short delay to ensure refs are populated
+    const timeoutId = setTimeout(setupObservers, 100);
 
     return () => {
-      observers.forEach((obs) => obs.disconnect());
+      clearTimeout(timeoutId);
+      observers.forEach((obs) => {
+        if (obs) obs.disconnect();
+      });
     };
-  }, []);
+  }, [festHistory.length]);
 
   // Drive active section based on which section is closest to a viewport anchor (like AI-2027).
   useEffect(() => {
@@ -144,16 +166,32 @@ export function Timeline() {
         </div>
 
         <main className={styles.centerColumn}>
-          {festHistory.map((event, index) => (
-            <section
-              key={event.id}
-              ref={(el) => {
-                sectionRefs.current[index] = el;
-              }}
-              className={`${styles.contentSection} ${
-                visibleSections.has(index) ? styles.visible : ''
-              }`}
-            >
+          {festHistory.map((event, index) => {
+            const isVisible = visibleSections.has(index);
+            return (
+              <section
+                key={event.id}
+                ref={(el) => {
+                  if (el) {
+                    sectionRefs.current[index] = el;
+                    // Check if element is already in viewport on mount
+                    const rect = el.getBoundingClientRect();
+                    const viewportHeight = window.innerHeight;
+                    if (rect.top < viewportHeight * 0.8 && rect.bottom > 0) {
+                      setVisibleSections((prev) => {
+                        const newSet = new Set(prev);
+                        newSet.add(index);
+                        return newSet;
+                      });
+                    }
+                  } else {
+                    sectionRefs.current[index] = null;
+                  }
+                }}
+                className={`${styles.contentSection} ${
+                  isVisible ? styles.visible : ''
+                }`}
+              >
               <div className={styles.sectionKicker}>
                 {event.fest} {event.year}
                 {event.status === 'upcoming' ? <span className={styles.kickerUpcoming}>Upcoming</span> : null}
@@ -168,7 +206,8 @@ export function Timeline() {
                 </div>
               </div>
             </section>
-          ))}
+            );
+          })}
         </main>
 
         <aside className={styles.rightColumn}>

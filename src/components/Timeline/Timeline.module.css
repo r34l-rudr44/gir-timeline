@@ -176,13 +176,15 @@
   min-height: 70vh;
   opacity: 0;
   transform: translateY(40px);
-  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: 
+    opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.1s,
+    transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+  will-change: opacity, transform;
 }
 
 .contentSection.visible {
-  opacity: 1;
-  transform: translateY(0);
+  opacity: 1 !important;
+  transform: translateY(0) !important;
 }
 
 .contentSection:last-child {
@@ -200,13 +202,15 @@
   margin-bottom: var(--space-4);
   opacity: 0;
   transform: translateX(-20px);
-  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.1s,
-              transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+  transition: 
+    opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s,
+    transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+  will-change: opacity, transform;
 }
 
 .contentSection.visible .sectionKicker {
-  opacity: 1;
-  transform: translateX(0);
+  opacity: 1 !important;
+  transform: translateX(0) !important;
 }
 
 .kickerUpcoming {
@@ -225,26 +229,30 @@
   margin-bottom: var(--space-6);
   opacity: 0;
   transform: translateY(20px);
-  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s,
-              transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+  transition: 
+    opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.3s,
+    transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+  will-change: opacity, transform;
 }
 
 .contentSection.visible .sectionTitle {
-  opacity: 1;
-  transform: translateY(0);
+  opacity: 1 !important;
+  transform: translateY(0) !important;
 }
 
 .sectionBody {
   max-width: 60ch;
   opacity: 0;
   transform: translateY(20px);
-  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.3s,
-              transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+  transition: 
+    opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s,
+    transform 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
+  will-change: opacity, transform;
 }
 
 .contentSection.visible .sectionBody {
-  opacity: 1;
-  transform: translateY(0);
+  opacity: 1 !important;
+  transform: translateY(0) !important;
 }
 
 .placeholder {
