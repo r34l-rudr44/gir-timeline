@@ -31,8 +31,8 @@
 }
 
 .block {
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   border-radius: var(--radius-sm);
   border: 2px solid var(--border-subtle);
   position: relative;

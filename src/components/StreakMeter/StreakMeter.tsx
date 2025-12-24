@@ -6,7 +6,7 @@ interface StreakMeterProps {
   animate?: boolean;
 }
 
-export function StreakMeter({ streak, maxDisplay = 6, animate = true }: StreakMeterProps) {
+export function StreakMeter({ streak, maxDisplay = 4, animate = true }: StreakMeterProps) {
   const blocks = Array.from({ length: maxDisplay }, (_, i) => i < streak);
   
   return (

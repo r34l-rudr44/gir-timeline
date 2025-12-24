@@ -16,17 +16,19 @@ export function TrophyCounter({ count, animate = true }: TrophyCounterProps) {
         <div className={styles.number}>
           <span className={styles.value}>{displayCount}</span>
         </div>
-        <div className={styles.trophies}>
-          {Array.from({ length: count }).map((_, i) => (
-            <div 
-              key={i} 
-              className={`${styles.trophy} ${animate ? styles.animate : ''}`}
-              style={{ '--delay': `${i * 0.2 + 0.3}s` } as React.CSSProperties}
-            >
-              <TrophyIcon />
-            </div>
-          ))}
-        </div>
+        {count > 0 && (
+          <div className={styles.trophies}>
+            {Array.from({ length: Math.min(count, 2) }).map((_, i) => (
+              <div 
+                key={i} 
+                className={`${styles.trophy} ${animate ? styles.animate : ''}`}
+                style={{ '--delay': `${i * 0.2 + 0.3}s` } as React.CSSProperties}
+              >
+                <TrophyIcon />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
       {count > 0 && (
         <div className={styles.subtitle}>

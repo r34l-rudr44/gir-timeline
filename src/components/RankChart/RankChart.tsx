@@ -181,13 +181,11 @@ export function RankChart({ events, currentIndex, animate = true }: RankChartPro
                     r={10}
                     fill="var(--gold-primary)"
                   />
-                  <text
+                  <TrophyIconSVG
                     x={x}
-                    y={y - 16}
+                    y={y - 20}
                     className={styles.trophyIcon}
-                  >
-                    🏆
-                  </text>
+                  />
                 </g>
               )}
               
@@ -205,6 +203,20 @@ export function RankChart({ events, currentIndex, animate = true }: RankChartPro
         })}
       </svg>
     </div>
+  );
+}
+
+function TrophyIconSVG({ x, y, className }: { x: number; y: number; className: string }) {
+  return (
+    <g transform={`translate(${x}, ${y})`}>
+      <path
+        d="M-6,-4 L-4,-8 L4,-8 L6,-4 L6,2 L-6,2 Z M-2,-6 L2,-6 L2,-4 L-2,-4 Z"
+        fill="var(--bg-dark)"
+        stroke="none"
+        className={className}
+      />
+      <circle cx="0" cy="-2" r="1.5" fill="var(--bg-dark)" />
+    </g>
   );
 }
 

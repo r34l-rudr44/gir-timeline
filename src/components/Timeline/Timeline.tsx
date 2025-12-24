@@ -11,7 +11,6 @@ import styles from './Timeline.module.css';
 
 export function Timeline() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const stickyRef = useRef<HTMLDivElement>(null);
   
   // Track scroll progress
   const scrollProgress = useScrollProgress(containerRef, { offset: 100 });
@@ -53,25 +52,51 @@ export function Timeline() {
         </div>
       </header>
       
-      {/* Scrollable Timeline Container */}
-      <div ref={containerRef} className={styles.container}>
-        {/* Sticky Dashboard */}
-        <div ref={stickyRef} className={styles.sticky}>
-          <div 
-            className={`
-              ${styles.dashboard} 
-              ${phaseChanged ? styles.phaseTransition : ''}
-              ${phase === 'dominance' ? styles.dominanceMode : ''}
-            `}
-          >
-            {/* Top Row: Fest Badge + Phase */}
-            <div className={styles.topRow}>
+      {/* Main Timeline Layout - 3 Column */}
+      <div ref={containerRef} className={styles.mainLayout}>
+        {/* Left Sidebar - Timeline Navigation */}
+        <aside className={styles.timelineSidebar}>
+          <div className={styles.sidebarContent}>
+            {festHistory.map((event, index) => {
+              const isActive = index === currentEventIndex;
+              const isPast = index < currentEventIndex;
+              
+              return (
+                <div
+                  key={event.id}
+                  className={`
+                    ${styles.timelineItem}
+                    ${isActive ? styles.active : ''}
+                    ${isPast ? styles.past : ''}
+                  `}
+                >
+                  <div className={styles.timelineDot} />
+                  <div className={styles.timelineContent}>
+                    <div className={styles.timelineDate}>
+                      {event.fest} {event.year}
+                    </div>
+                    {isActive && (
+                      <div className={styles.timelineRank}>
+                        {event.rank !== null ? `Rank #${event.rank}` : 'Upcoming'}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </aside>
+        
+        {/* Center Content Area */}
+        <main className={styles.contentArea}>
+          <div className={styles.contentWrapper}>
+            {/* Date Badge */}
+            <div className={styles.contentHeader}>
               <FestBadge 
                 fest={currentEvent.fest}
                 year={currentEvent.year}
                 isTrophyWin={currentEvent.isTrophyWin}
               />
-              <PhaseIndicator currentPhase={phase} />
             </div>
             
             {/* Chart Section */}
@@ -87,11 +112,55 @@ export function Timeline() {
               <p className={styles.eventDescription}>
                 {currentEvent.description}
               </p>
-              {currentEvent.rank !== null && (
-                <div className={styles.rankDisplay}>
-                  <span className={styles.rankLabel}>Rank</span>
+            </div>
+            
+            {/* Phase Indicator */}
+            <div className={styles.phaseSection}>
+              <PhaseIndicator currentPhase={phase} />
+            </div>
+            
+            {/* Scroll Spacer - Creates scrollable area */}
+            <div className={styles.scrollSpacer}>
+              {festHistory.map((event, index) => (
+                <div 
+                  key={event.id}
+                  className={styles.eventSection}
+                />
+              ))}
+            </div>
+          </div>
+        </main>
+        
+        {/* Right Sidebar - Fixed Stats Bar */}
+        <aside className={styles.statsSidebar}>
+          <div className={styles.statsContent}>
+            <div className={styles.statsHeader}>
+              <span className={styles.statsTitle}>STATS</span>
+            </div>
+            
+            <div className={styles.statsMetrics}>
+              <TrophyCounter count={totalTrophies} />
+              
+              <div className={styles.statDivider} />
+              
+              <StreakMeter streak={currentStreak} />
+              
+              <div className={styles.statDivider} />
+              
+              <CycleProgress 
+                completed={cycleProgress.completed}
+                cycleId={currentEvent.cycleId}
+              />
+            </div>
+            
+            {/* Rank Display */}
+            {currentEvent.rank !== null && (
+              <>
+                <div className={styles.statDivider} />
+                <div className={styles.rankStat}>
+                  <span className={styles.rankStatLabel}>Current Rank</span>
                   <span 
-                    className={styles.rankValue}
+                    className={styles.rankStatValue}
                     style={{ 
                       color: currentEvent.rank === 1 
                         ? 'var(--rank-1)' 
@@ -101,43 +170,10 @@ export function Timeline() {
                     #{currentEvent.rank}
                   </span>
                 </div>
-              )}
-            </div>
-            
-            {/* Metrics Row */}
-            <div className={styles.metricsRow}>
-              <TrophyCounter count={totalTrophies} />
-              <div className={styles.divider} />
-              <StreakMeter streak={currentStreak} />
-              <div className={styles.divider} />
-              <CycleProgress 
-                completed={cycleProgress.completed}
-                cycleId={currentEvent.cycleId}
-              />
-            </div>
-            
-            {/* Progress Indicator */}
-            <div className={styles.progressBar}>
-              <div 
-                className={styles.progressFill}
-                style={{ width: `${scrollProgress * 100}%` }}
-              />
-            </div>
+              </>
+            )}
           </div>
-        </div>
-        
-        {/* Scroll Spacer - Creates scrollable area */}
-        <div className={styles.scrollSpacer}>
-          {festHistory.map((event, index) => (
-            <div 
-              key={event.id}
-              className={`
-                ${styles.eventSection}
-                ${index === currentEventIndex ? styles.activeSection : ''}
-              `}
-            />
-          ))}
-        </div>
+        </aside>
       </div>
       
       {/* Footer */}
@@ -156,4 +192,3 @@ export function Timeline() {
 }
 
 export default Timeline;
-
