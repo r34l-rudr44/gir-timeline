@@ -13,7 +13,32 @@
 .timeline {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: 0;
+  align-items: center;
+  transition: all var(--duration-normal) var(--ease-out);
+  position: relative;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border-subtle);
+  transform: translateX(-50%);
+  z-index: 0;
+  transition: opacity var(--duration-normal) var(--ease-out);
+}
+
+.sidebar:hover .timeline {
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.sidebar:hover .timeline::before {
+  opacity: 0;
 }
 
 .timelineItem {
@@ -23,8 +48,17 @@
   padding: var(--space-2) var(--space-3);
   cursor: pointer;
   position: relative;
-  transition: all var(--duration-fast) var(--ease-out);
+  transition: all var(--duration-normal) var(--ease-out);
   border-radius: var(--radius-sm);
+  width: 100%;
+  justify-content: center;
+  z-index: 1;
+  background: var(--bg-dark);
+}
+
+.sidebar:hover .timelineItem {
+  justify-content: flex-start;
+  background: transparent;
 }
 
 .timelineItem:hover {
@@ -44,16 +78,24 @@
   height: 100%;
   background: var(--gold-primary);
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  opacity: 0;
+  transition: opacity var(--duration-normal) var(--ease-out);
+}
+
+.sidebar:hover .activeIndicator {
+  opacity: 1;
 }
 
 .dot {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: var(--radius-full);
   background: var(--border-subtle);
-  border: 2px solid var(--bg-elevated);
+  border: 2px solid var(--bg-dark);
   flex-shrink: 0;
   transition: all var(--duration-normal) var(--ease-out);
+  z-index: 2;
+  position: relative;
 }
 
 .timelineItem.past .dot {
@@ -64,9 +106,9 @@
 .timelineItem.active .dot {
   background: var(--gold-bright);
   border-color: var(--gold-bright);
-  box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
-  width: 10px;
-  height: 10px;
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.6);
+  width: 12px;
+  height: 12px;
 }
 
 .timelineItem.upcoming .dot {
@@ -78,7 +120,18 @@
   font-family: var(--font-mono);
   font-size: var(--text-sm);
   color: var(--text-muted);
-  transition: color var(--duration-normal) var(--ease-out);
+  transition: 
+    color var(--duration-normal) var(--ease-out),
+    opacity var(--duration-normal) var(--ease-out),
+    transform var(--duration-normal) var(--ease-out);
+  opacity: 0;
+  transform: translateX(-10px);
+  white-space: nowrap;
+}
+
+.sidebar:hover .label {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .timelineItem.past .label {

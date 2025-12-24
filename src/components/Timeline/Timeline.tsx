@@ -183,6 +183,9 @@ export function Timeline() {
                 year={currentEvent.year}
                 isTrophyWin={currentEvent.isTrophyWin}
               />
+              <div className={styles.dashboardPhase}>
+                <PhaseIndicator currentPhase={phase} />
+              </div>
             </div>
 
             <div className={styles.dashboardChart}>
@@ -191,10 +194,6 @@ export function Timeline() {
 
             <div className={styles.dashboardDescription}>
               <p className={styles.eventDescription}>{currentEvent.description}</p>
-            </div>
-
-            <div className={styles.dashboardPhase}>
-              <PhaseIndicator currentPhase={phase} />
             </div>
 
             <div className={styles.dashboardStats}>

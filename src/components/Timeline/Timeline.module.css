@@ -147,7 +147,7 @@
    left sticky timeline, middle scrolling content, right sticky dashboard */
 .mainLayout {
   display: grid;
-  grid-template-columns: 200px minmax(0, 1fr) 520px;
+  grid-template-columns: 200px minmax(0, 1fr) 440px;
   gap: var(--space-10);
   max-width: 1400px;
   margin: 0 auto;
@@ -166,8 +166,6 @@
 }
 
 .rightColumn {
-  position: sticky;
-  top: var(--space-8);
   align-self: start;
 }
 
@@ -263,14 +261,20 @@
   background: var(--bg-elevated);
   border-radius: var(--radius-xl);
   border: 1px solid var(--border-subtle);
-  padding: var(--space-6);
+  padding: var(--space-5);
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
+  gap: var(--space-4);
   box-shadow:
     0 4px 24px rgba(0, 0, 0, 0.4),
     0 0 0 1px rgba(255, 255, 255, 0.03);
   transition: all var(--duration-slow) var(--ease-out);
+  width: 100%;
+  max-width: 420px;
+  max-height: calc(100vh - var(--space-16));
+  overflow-y: auto;
+  position: sticky;
+  top: var(--space-8);
 }
 
 .dashboardCard.phaseTransition {
@@ -287,31 +291,43 @@
 
 .dashboardTop {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.dashboardPhase {
+  flex-shrink: 0;
+  margin-top: 0;
+  transform: scale(0.85);
+  transform-origin: top right;
 }
 
 .dashboardChart {
   padding-top: var(--space-2);
+  flex-shrink: 0;
 }
 
 .dashboardDescription {
-  padding: var(--space-4);
+  padding: var(--space-3);
   background: var(--bg-card);
   border-radius: var(--radius-md);
   border: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
 }
 
 .eventDescription {
   font-family: var(--font-body);
-  font-size: var(--text-base);
+  font-size: var(--text-sm);
   color: var(--text-secondary);
-  line-height: 1.7;
+  line-height: 1.6;
 }
 
 .dashboardStats {
   display: flex;
   flex-direction: column;
-  gap: var(--space-5);
+  gap: var(--space-4);
+  flex-shrink: 0;
 }
 
 .statDivider {
@@ -381,11 +397,33 @@
   color: var(--text-muted);
 }
 
+/* Dashboard scrollbar */
+.dashboardCard::-webkit-scrollbar {
+  width: 4px;
+}
+
+.dashboardCard::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dashboardCard::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: var(--radius-full);
+}
+
+.dashboardCard::-webkit-scrollbar-thumb:hover {
+  background: var(--gold-muted);
+}
+
 /* Responsive */
 @media (max-width: 1200px) {
   .mainLayout {
-    grid-template-columns: 180px minmax(0, 1fr) 460px;
+    grid-template-columns: 180px minmax(0, 1fr) 400px;
     gap: var(--space-8);
+  }
+  
+  .dashboardCard {
+    max-width: 100%;
   }
 }
 
