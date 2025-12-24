@@ -1,23 +1,24 @@
-import { useRef, useState, useEffect } from 'react';
+import { useMemo, useRef, useState, useEffect } from 'react';
 import { festHistory, deriveTimelineState } from '../../data/festHistory';
-import { useScrollProgress, useCurrentEventIndex } from '../../hooks/useScrollProgress';
 import { FestBadge } from '../FestBadge';
 import { PhaseIndicator } from '../PhaseIndicator';
 import { TrophyCounter } from '../TrophyCounter';
 import { StreakMeter } from '../StreakMeter';
 import { CycleProgress } from '../CycleProgress';
 import { RankChart } from '../RankChart';
+import { SidebarTimeline } from '../SidebarTimeline';
 import styles from './Timeline.module.css';
 
 export function Timeline() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  
-  // Track scroll progress
-  const scrollProgress = useScrollProgress(containerRef, { offset: 100 });
-  const currentEventIndex = useCurrentEventIndex(scrollProgress, festHistory.length);
-  
-  // Derive timeline state from current event
-  const timelineState = deriveTimelineState(currentEventIndex);
+  const sectionRefs = useRef<Array<HTMLElement | null>>([]);
+
+  // AI-2027-style: the middle column scroll sections drive which "frame" is active on the right.
+  const [currentEventIndex, setCurrentEventIndex] = useState(0);
+
+  const timelineState = useMemo(
+    () => deriveTimelineState(currentEventIndex),
+    [currentEventIndex]
+  );
   const { currentEvent, phase, totalTrophies, currentStreak, cycleProgress } = timelineState;
   
   // Track phase changes for animation triggers
@@ -32,6 +33,55 @@ export function Timeline() {
       return () => clearTimeout(timer);
     }
   }, [phase, prevPhase]);
+
+  // Drive active section based on which section is closest to a viewport anchor (like AI-2027).
+  useEffect(() => {
+    let raf = 0;
+
+    const updateActive = () => {
+      raf = 0;
+      const anchorY = window.innerHeight * 0.28;
+
+      let bestIndex = 0;
+      let bestDistance = Number.POSITIVE_INFINITY;
+
+      for (let i = 0; i < festHistory.length; i++) {
+        const el = sectionRefs.current[i];
+        if (!el) continue;
+        const rect = el.getBoundingClientRect();
+        const dist = Math.abs(rect.top - anchorY);
+        if (dist < bestDistance) {
+          bestDistance = dist;
+          bestIndex = i;
+        }
+      }
+
+      setCurrentEventIndex((prev) => (prev === bestIndex ? prev : bestIndex));
+    };
+
+    const onScroll = () => {
+      if (raf) return;
+      raf = window.requestAnimationFrame(updateActive);
+    };
+
+    // Initial
+    onScroll();
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (raf) window.cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  const scrollToIndex = (index: number) => {
+    const el = sectionRefs.current[index];
+    if (!el) return;
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
   
   return (
     <div className={styles.wrapper}>
@@ -45,133 +95,98 @@ export function Timeline() {
           <p className={styles.tagline}>
             A story of growth, breakthrough, and sustained excellence
           </p>
-          <div className={styles.scrollHint}>
+          <button
+            type="button"
+            className={styles.scrollHint}
+            onClick={() => scrollToIndex(0)}
+          >
             <span>Scroll to explore</span>
             <div className={styles.scrollArrow}>↓</div>
-          </div>
+          </button>
         </div>
       </header>
       
-      {/* Main Timeline Layout - 3 Column */}
-      <div ref={containerRef} className={styles.mainLayout}>
-        {/* Left Sidebar - Timeline Navigation */}
-        <aside className={styles.timelineSidebar}>
-          <div className={styles.sidebarContent}>
-            {festHistory.map((event, index) => {
-              const isActive = index === currentEventIndex;
-              const isPast = index < currentEventIndex;
-              
-              return (
-                <div
-                  key={event.id}
-                  className={`
-                    ${styles.timelineItem}
-                    ${isActive ? styles.active : ''}
-                    ${isPast ? styles.past : ''}
-                  `}
-                >
-                  <div className={styles.timelineDot} />
-                  <div className={styles.timelineContent}>
-                    <div className={styles.timelineDate}>
-                      {event.fest} {event.year}
-                    </div>
-                    {isActive && (
-                      <div className={styles.timelineRank}>
-                        {event.rank !== null ? `Rank #${event.rank}` : 'Upcoming'}
-                      </div>
-                    )}
-                  </div>
+      {/* AI-2027-inspired layout: left timeline, center content, right sticky panel */}
+      <div className={styles.mainLayout}>
+        <div className={styles.leftColumn}>
+          <SidebarTimeline currentIndex={currentEventIndex} onEventClick={scrollToIndex} />
+        </div>
+
+        <main className={styles.centerColumn}>
+          {festHistory.map((event, index) => (
+            <section
+              key={event.id}
+              ref={(el) => {
+                sectionRefs.current[index] = el;
+              }}
+              className={styles.contentSection}
+            >
+              <div className={styles.sectionKicker}>
+                {event.fest} {event.year}
+                {event.status === 'upcoming' ? <span className={styles.kickerUpcoming}>Upcoming</span> : null}
+              </div>
+              <h2 className={styles.sectionTitle}>
+                {event.fest === 'Paradox' ? 'Paradox Cycle' : event.fest}
+              </h2>
+
+              <div className={styles.sectionBody}>
+                <div className={styles.placeholder}>
+                  Content will go here.
                 </div>
-              );
-            })}
-          </div>
-        </aside>
-        
-        {/* Center Content Area */}
-        <main className={styles.contentArea}>
-          <div className={styles.contentWrapper}>
-            {/* Date Badge */}
-            <div className={styles.contentHeader}>
-              <FestBadge 
+              </div>
+            </section>
+          ))}
+        </main>
+
+        <aside className={styles.rightColumn}>
+          <div
+            className={`${styles.dashboardCard} ${
+              phaseChanged ? styles.phaseTransition : ''
+            } ${phase === 'dominance' ? styles.dominanceMode : ''}`}
+          >
+            <div className={styles.dashboardTop}>
+              <FestBadge
                 fest={currentEvent.fest}
                 year={currentEvent.year}
                 isTrophyWin={currentEvent.isTrophyWin}
               />
             </div>
-            
-            {/* Chart Section */}
-            <div className={styles.chartSection}>
-              <RankChart 
-                events={festHistory}
-                currentIndex={currentEventIndex}
-              />
+
+            <div className={styles.dashboardChart}>
+              <RankChart events={festHistory} currentIndex={currentEventIndex} />
             </div>
-            
-            {/* Event Description */}
-            <div className={styles.description}>
-              <p className={styles.eventDescription}>
-                {currentEvent.description}
-              </p>
+
+            <div className={styles.dashboardDescription}>
+              <p className={styles.eventDescription}>{currentEvent.description}</p>
             </div>
-            
-            {/* Phase Indicator */}
-            <div className={styles.phaseSection}>
+
+            <div className={styles.dashboardPhase}>
               <PhaseIndicator currentPhase={phase} />
             </div>
-            
-            {/* Scroll Spacer - Creates scrollable area */}
-            <div className={styles.scrollSpacer}>
-              {festHistory.map((event, index) => (
-                <div 
-                  key={event.id}
-                  className={styles.eventSection}
-                />
-              ))}
-            </div>
-          </div>
-        </main>
-        
-        {/* Right Sidebar - Fixed Stats Bar */}
-        <aside className={styles.statsSidebar}>
-          <div className={styles.statsContent}>
-            <div className={styles.statsHeader}>
-              <span className={styles.statsTitle}>STATS</span>
-            </div>
-            
-            <div className={styles.statsMetrics}>
+
+            <div className={styles.dashboardStats}>
               <TrophyCounter count={totalTrophies} />
-              
               <div className={styles.statDivider} />
-              
               <StreakMeter streak={currentStreak} />
-              
               <div className={styles.statDivider} />
-              
-              <CycleProgress 
-                completed={cycleProgress.completed}
-                cycleId={currentEvent.cycleId}
-              />
+              <CycleProgress completed={cycleProgress.completed} cycleId={currentEvent.cycleId} />
+
+              {currentEvent.rank !== null && (
+                <>
+                  <div className={styles.statDivider} />
+                  <div className={styles.rankStat}>
+                    <span className={styles.rankStatLabel}>Current Rank</span>
+                    <span
+                      className={`${styles.rankStatValue} ${
+                        currentEvent.rank === 1 ? styles.rankFirst : ''
+                      }`}
+                    >
+                      #{currentEvent.rank}
+                    </span>
+                  </div>
+                </>
+              )}
             </div>
-            
-            {/* Rank Display */}
-            {currentEvent.rank !== null && (
-              <>
-                <div className={styles.statDivider} />
-                <div className={styles.rankStat}>
-                  <span className={styles.rankStatLabel}>Current Rank</span>
-                  <span 
-                    className={styles.rankStatValue}
-                    style={{ 
-                      color: currentEvent.rank === 1 
-                        ? 'var(--rank-1)' 
-                        : 'var(--text-primary)' 
-                    }}
-                  >
-                    #{currentEvent.rank}
-                  </span>
-                </div>
-              </>
-            )}
           </div>
         </aside>
       </div>
