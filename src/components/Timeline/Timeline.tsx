@@ -11,6 +11,7 @@ import styles from './Timeline.module.css';
 
 export function Timeline() {
   const sectionRefs = useRef<Array<HTMLElement | null>>([]);
+  const [visibleSections, setVisibleSections] = useState<Set<number>>(new Set([0]));
 
   // AI-2027-style: the middle column scroll sections drive which "frame" is active on the right.
   const [currentEventIndex, setCurrentEventIndex] = useState(0);
@@ -33,6 +34,36 @@ export function Timeline() {
       return () => clearTimeout(timer);
     }
   }, [phase, prevPhase]);
+
+  // Intersection Observer for scroll-driven animations
+  useEffect(() => {
+    const observers: IntersectionObserver[] = [];
+
+    sectionRefs.current.forEach((el, index) => {
+      if (!el) return;
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              setVisibleSections((prev) => new Set([...prev, index]));
+            }
+          });
+        },
+        {
+          threshold: 0.2,
+          rootMargin: '-20% 0px -20% 0px',
+        }
+      );
+
+      observer.observe(el);
+      observers.push(observer);
+    });
+
+    return () => {
+      observers.forEach((obs) => obs.disconnect());
+    };
+  }, []);
 
   // Drive active section based on which section is closest to a viewport anchor (like AI-2027).
   useEffect(() => {
@@ -119,7 +150,9 @@ export function Timeline() {
               ref={(el) => {
                 sectionRefs.current[index] = el;
               }}
-              className={styles.contentSection}
+              className={`${styles.contentSection} ${
+                visibleSections.has(index) ? styles.visible : ''
+              }`}
             >
               <div className={styles.sectionKicker}>
                 {event.fest} {event.year}
