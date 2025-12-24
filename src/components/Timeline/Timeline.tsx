@@ -40,7 +40,7 @@ export function Timeline() {
       <header className={styles.hero}>
         <div className={styles.heroContent}>
           <h1 className={styles.title}>
-            <span className={styles.house}>GIR</span>
+            <span className={styles.house}>Gir</span>
             <span className={styles.subtitle}>House Trophy Timeline</span>
           </h1>
           <p className={styles.tagline}>
@@ -144,7 +144,7 @@ export function Timeline() {
       <footer className={styles.footer}>
         <div className={styles.footerContent}>
           <p className={styles.principle}>
-            "GIR is defined not by one win, but by repeated excellence over time."
+            "Gir is defined not by one win, but by repeated excellence over time."
           </p>
           <p className={styles.credit}>
             IIT Madras BS Degree · House Competition Archives

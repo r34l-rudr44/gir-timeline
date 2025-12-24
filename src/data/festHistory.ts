@@ -24,7 +24,7 @@ export interface TimelineState {
   eventsUpToNow: FestEvent[];
 }
 
-// Canonical GIR Performance History
+// Canonical Gir Performance History
 export const festHistory: FestEvent[] = [
   {
     id: 'saavan-2023',
@@ -35,7 +35,7 @@ export const festHistory: FestEvent[] = [
     phase: 'contender',
     cycleId: 'paradox-2024',
     status: 'completed',
-    description: 'GIR enters the arena. A solid #4 finish marks the beginning.',
+    description: 'Gir enters the arena. A solid #4 finish marks the beginning.',
   },
   {
     id: 'margazhi-2024',
@@ -46,7 +46,7 @@ export const festHistory: FestEvent[] = [
     phase: 'contender',
     cycleId: 'paradox-2024',
     status: 'completed',
-    description: 'Consistency builds. GIR holds steady at #4.',
+    description: 'Consistency builds. Gir holds steady at #4.',
   },
   {
     id: 'paradox-2024',
@@ -57,7 +57,7 @@ export const festHistory: FestEvent[] = [
     phase: 'breakthrough',
     cycleId: 'paradox-2024',
     status: 'completed',
-    description: 'THE BREAKTHROUGH. GIR claims the throne with a stunning #1 finish and the House Trophy.',
+    description: 'THE BREAKTHROUGH. Gir claims the throne with a stunning #1 finish and the House Trophy.',
   },
   {
     id: 'margazhi-2025',
@@ -68,7 +68,7 @@ export const festHistory: FestEvent[] = [
     phase: 'dominance',
     cycleId: 'paradox-2025',
     status: 'completed',
-    description: 'Dominance begins. GIR defends the #1 position.',
+    description: 'Dominance begins. Gir defends the #1 position.',
   },
   {
     id: 'paradox-2025',
@@ -79,7 +79,7 @@ export const festHistory: FestEvent[] = [
     phase: 'dominance',
     cycleId: 'paradox-2025',
     status: 'completed',
-    description: 'BACK-TO-BACK. GIR secures the second consecutive House Trophy.',
+    description: 'BACK-TO-BACK. Gir secures the second consecutive House Trophy.',
   },
   {
     id: 'saavan-2025',
@@ -112,7 +112,7 @@ export const festHistory: FestEvent[] = [
     phase: 'dominance',
     cycleId: 'paradox-2026',
     status: 'upcoming',
-    description: 'Can GIR claim a third consecutive trophy?',
+    description: 'Can Gir claim a third consecutive trophy?',
   },
 ];
 
